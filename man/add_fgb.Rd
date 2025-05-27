@@ -11,7 +11,7 @@ add_fgb(map, url, file, style = NULL, options = NULL)
 
 \item{url}{string: URL to the flatgeobuf. Ignored if \code{file} is provided}
 
-\item{file}{string: path to the flatgeobuf file}
+\item{file}{string: path to the flatgeobuf file. Note that \code{file} will only work with Shiny, not in standalone htmlwidgets or rmarkdown files}
 
 \item{style}{list: styling as a list of flat style properties: \url{https://openlayers.org/en/latest/apidoc/module-ol_style_flat.html}}
 

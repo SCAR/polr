@@ -1,6 +1,6 @@
 Package: polr
 Title: Polar OpenLayers
-Version: 0.0.0.9000
+Version: 0.0.1
 Authors@R:
     person("Ben", "Raymond", , "ben.raymond@aad.gov.au", role = c("aut", "cre"))
 Description: A minimal set of bindings to openlayers, with a focus on polar mapping applications.

@@ -3,7 +3,7 @@
 #' @references <https://flatgeobuf.org/examples/openlayers/>
 #' @param map pol or pol_proxy: map to add the layer to
 #' @param url string: URL to the flatgeobuf. Ignored if `file` is provided
-#' @param file string: path to the flatgeobuf file
+#' @param file string: path to the flatgeobuf file. Note that `file` will only work with Shiny, not in standalone htmlwidgets or rmarkdown files
 #' @param style list: styling as a list of flat style properties: <https://openlayers.org/en/latest/apidoc/module-ol_style_flat.html>
 #' @param options list: vector layer options <https://openlayers.org/en/latest/apidoc/module-ol_layer_Vector-VectorLayer.html>
 #'
@@ -13,6 +13,8 @@
 #' @export
 add_fgb <- function(map, url, file, style = NULL, options = NULL) {
     if (!missing(file)) {
+        ## are we in a Shiny session?
+        if (!shiny::isRunning()) stop("add_fgb with `file` only works in Shiny applications")
         spdir <- dirname(file)
         prefix <- UUIDgenerate()
         addResourcePath(prefix, spdir)
