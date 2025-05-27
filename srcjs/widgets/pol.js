@@ -131,8 +131,10 @@ HTMLWidgets.widget({
                     methods[call.method].apply(map, call.args);
                 }
 
-                // attach the map data to the element so we can use it later in proxy calls
-                $(el).data("polr-map", map);
+                if (HTMLWidgets.shinyMode) {
+                    // attach the map data to the element so we can use it later in proxy calls
+                    $(el).data("polr-map", map);
+                }
 
             },
 
