@@ -43,7 +43,9 @@ server <- function(input, output, session) {
     output$map <- renderPol({
         polr::pol(view_options = list(projection = "EPSG:3031", extent = 5e6 * c(-1, -1, 1, 1))) %>%
             add_wms_tiles(url = "https://geos.polarview.aq/geoserver/wms",
-                          layers = "polarview:coastS10")
+                          layers = "polarview:coastS10") %>%
+            add_fgb(file = system.file("extdata/fronts_park.fgb", package = "polr"),
+                    style = list(`stroke-color` = "black"))
     })
 
     ## dynamically update the map
