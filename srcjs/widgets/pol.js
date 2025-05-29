@@ -2,11 +2,17 @@ import "widgets";
 // projections
 import proj4 from "proj4";
 import { register } from "ol/proj/proj4.js";
+import * as olProj from "ol/proj";
+
 import { defaults as control_defaults } from 'ol/control/defaults';
 // openlayers
 import Map from "ol/Map.js";
 import View from "ol/View.js";
-import Style from "ol/style/Style.js";
+import * as olStyle from "ol/style";
+import GeoJSON from "ol/format/GeoJSON.js";
+import Feature from "ol/Feature.js";
+import Point from "ol/geom/Point.js";
+import MultiPoint from "ol/geom/MultiPoint.js";
 // sources
 import GeoTIFF from "ol/source/GeoTIFF.js";
 import TileWMS from "ol/source/TileWMS.js";
@@ -69,6 +75,26 @@ HTMLWidgets.widget({
             }
             this.addLayer(layer);
         }
+
+        function read_geojson(data, data_proj, view_proj) {
+            var features = new GeoJSON().readFeatures(data, {
+                dataProjection: data_proj, //?? || undefined,
+                featureProjection: view_proj
+            });
+            return features;
+        };
+
+        methods.add_geojson = function(data, style, popup, options, data_proj) {
+            const view_proj = this.getView().getProjection();
+            var features = read_geojson(data, data_proj, view_proj);
+            var dataSource = new VectorSource({
+                features: features
+            });
+            var layer = new VectorLayer(vector_source_with_options(dataSource, options));
+            layer.set("title", layer.get("name"));
+            if (style) { layer.setStyle(style); }
+            this.addLayer(layer);
+        };
 
         methods.add_wms_tiles = function(url, params, tile_wms_options, options) {
             tile_wms_options = tile_wms_options || {};

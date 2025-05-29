@@ -2,6 +2,7 @@
 
 export(add_cog)
 export(add_fgb)
+export(add_geojson)
 export(add_wms_tiles)
 export(pol)
 export(polOutput)
