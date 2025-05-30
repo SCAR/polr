@@ -8,3 +8,5 @@ invoke_method <- function(map, method_name, ...) {
         map
     }
 }
+
+list_no_nulls <- function(...) Filter(Negate(is.null), list(...))

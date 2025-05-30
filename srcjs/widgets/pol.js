@@ -82,9 +82,21 @@ HTMLWidgets.widget({
                 featureProjection: view_proj
             });
             return features;
-        };
+        }
 
-        methods.add_geojson = function(data, style, popup, options, data_proj) {
+        // https://openlayers.org/en/latest/apidoc/module-ol_style_Style.html
+        function make_style(style) {
+            var styleobj = new olStyle.Style({
+                fill: style.fill ? new olStyle.Fill(style.fill) : null,
+                image: style.image ? new olStyle.Image(style.image) : null,
+                stroke: style.stroke ? new olStyle.Stroke(style.stroke) : null,
+                text: style.text ? new olStyle.Text(style.text) : null,
+                zIndex:  style.zIndex
+            });
+            return styleobj;
+        }
+
+        methods.add_geojson = function(data, style, flat_style, options, data_proj) { // popup
             const view_proj = this.getView().getProjection();
             var features = read_geojson(data, data_proj, view_proj);
             var dataSource = new VectorSource({
@@ -92,7 +104,11 @@ HTMLWidgets.widget({
             });
             var layer = new VectorLayer(vector_source_with_options(dataSource, options));
             layer.set("title", layer.get("name"));
-            if (style) { layer.setStyle(style); }
+            if (flat_style) {
+                layer.setStyle(flat_style);
+            } else {
+                layer.setStyle(make_style(style));
+            }
             this.addLayer(layer);
         };
 

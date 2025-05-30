@@ -13,7 +13,7 @@ add_geojson(map, data, file, style = NULL, options = NULL, data_proj = NULL)
 
 \item{file}{string: path to geojson file}
 
-\item{style}{list: styling as a list of flat style properties: \url{https://openlayers.org/en/latest/apidoc/module-ol_style_flat.html}}
+\item{style}{: either a style object as returned by \code{\link[=pol_style]{pol_style()}} or a list of flat style properties: \url{https://openlayers.org/en/latest/apidoc/module-ol_style_flat.html}}
 
 \item{options}{list: vector layer options \url{https://openlayers.org/en/latest/apidoc/module-ol_layer_Vector-VectorLayer.html}}
 
