@@ -84,13 +84,22 @@ HTMLWidgets.widget({
             return features;
         }
 
+        // https://openlayers.org/en/latest/apidoc/module-ol_style_Text-Text.html
+        function make_text_style(style) {
+            style.stroke = style.stroke ? new olStyle.Stroke(style.stroke) : null;
+            style.fill = style.fill ? new olStyle.Fill(style.fill) : null;
+            style.backgroundStroke = style.backgroundStroke ? new olStyle.Stroke(style.backgroundStroke) : null;
+            style.backgroundFill = style.backgroundFill ? new olStyle.Fill(style.backgroundFill) : null;
+            return new olStyle.Text(style);
+        }
+
         // https://openlayers.org/en/latest/apidoc/module-ol_style_Style.html
         function make_style(style) {
             var styleobj = new olStyle.Style({
                 fill: style.fill ? new olStyle.Fill(style.fill) : null,
                 image: style.image ? new olStyle.Image(style.image) : null,
                 stroke: style.stroke ? new olStyle.Stroke(style.stroke) : null,
-                text: style.text ? new olStyle.Text(style.text) : null,
+                text: style.text ? make_text_style(style.text) : null,
                 zIndex:  style.zIndex
             });
             return styleobj;
@@ -111,6 +120,27 @@ HTMLWidgets.widget({
             }
             this.addLayer(layer);
         };
+
+        function points_from_array(data, view_proj) {
+            var pts = [];
+            for (var pt of data) {
+                pts.push(new Feature({ geometry: new Point(olProj.fromLonLat(pt, view_proj)) }));
+            }
+            return pts;
+        }
+
+        methods.add_points = function(data, style, flat_style, options) {
+            const source = new VectorSource({
+                features: points_from_array(data, this.getView().getProjection())
+            });
+            const layer = new VectorLayer(vector_source_with_options(source, options));
+            if (flat_style) {
+                layer.setStyle(flat_style);
+            } else {
+                layer.setStyle(make_style(style));
+            }
+            this.addLayer(layer);
+        }
 
         methods.add_wms_tiles = function(url, params, tile_wms_options, options) {
             tile_wms_options = tile_wms_options || {};
