@@ -64,14 +64,16 @@ HTMLWidgets.widget({
             return options;
         };
 
-        methods.add_fgb = function(url, style, options) {
+        methods.add_fgb = function(url, style, flat_style, options) {
             const source = new VectorSource();
             const loader = createLoader(source, url);
             source.setLoader(loader);
             var layer = new VectorLayer(vector_source_with_options(source, options));
             layer.set("title", layer.get("name"));
-            if (style) {
-                layer.setStyle(style);
+            if (flat_style) {
+                layer.setStyle(flat_style);
+            } else {
+                layer.setStyle(make_style(style));
             }
             this.addLayer(layer);
         }
