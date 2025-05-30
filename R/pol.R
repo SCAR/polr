@@ -1,6 +1,6 @@
-#' Create an openlayers map object
+#' Create a polar openlayers map object
 #'
-#' @param view_options list: <https://openlayers.org/en/latest/apidoc/module-ol_View.html#~ViewOptions>
+#' @param view_options list: <https://openlayers.org/en/latest/apidoc/module-ol_View.html#~ViewOptions>. By default the projection will be set to "EPSG:3031" (Antarctic polar stereographic)
 #' @param control_options list: <https://openlayers.org/en/latest/apidoc/module-ol_control_defaults.html#~DefaultsOptions>
 #' @param width,height : Must be a valid CSS unit (like \code{'100\%'}, \code{'400px'}, \code{'auto'}) or a number, which will be coerced to a string and have \code{'px'} appended
 #' @param elementId string: element ID

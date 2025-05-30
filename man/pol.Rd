@@ -2,7 +2,7 @@
 % Please edit documentation in R/pol.R
 \name{pol}
 \alias{pol}
-\title{Create an openlayers map object}
+\title{Create a polar openlayers map object}
 \usage{
 pol(
   view_options = list(),
@@ -13,7 +13,7 @@ pol(
 )
 }
 \arguments{
-\item{view_options}{list: \url{https://openlayers.org/en/latest/apidoc/module-ol_View.html#~ViewOptions}}
+\item{view_options}{list: \url{https://openlayers.org/en/latest/apidoc/module-ol_View.html#~ViewOptions}. By default the projection will be set to "EPSG:3031" (Antarctic polar stereographic)}
 
 \item{control_options}{list: \url{https://openlayers.org/en/latest/apidoc/module-ol_control_defaults.html#~DefaultsOptions}}
 
@@ -22,5 +22,5 @@ pol(
 \item{elementId}{string: element ID}
 }
 \description{
-Create an openlayers map object
+Create a polar openlayers map object
 }

@@ -8,6 +8,7 @@ import { defaults as control_defaults } from 'ol/control/defaults';
 // openlayers
 import Map from "ol/Map.js";
 import View from "ol/View.js";
+import Overlay from "ol/Overlay.js";
 import * as olStyle from "ol/style";
 import GeoJSON from "ol/format/GeoJSON.js";
 import Feature from "ol/Feature.js";
@@ -182,11 +183,30 @@ HTMLWidgets.widget({
                 proj4.defs('EPSG:3031','+proj=stere +lat_0=-90 +lat_ts=-71 +lon_0=0 +k=1 +x_0=0 +y_0=0 +ellps=WGS84 +datum=WGS84 +units=m +no_defs');
                 register(proj4);
 
-                const projection = x.view_options.projection || "EPSG:3857";
+                const projection = x.view_options.projection || "EPSG:3031";
                 var extent = x.view_options.extent || undefined;
+
+                // overlay to hold popups
+                // add container first
+                var popup_container = document.createElement("div");
+                popup_container.setAttribute("id", "popup_container");
+                el.parentElement.insertBefore(popup_container, el.nextSibling);
+                const overlay = new Overlay({
+                    element: popup_container,
+                    autoPan: {
+                        animation: {
+                            duration: 250,
+                        },
+                    },
+                });
+                popup_container.addEventListener('click', function() {
+                    overlay.setPosition(); // hide it
+                });
+
                 map = new Map({
                     target: el.id,
                     controls: control_defaults(x.control_options),
+                    overlays: [overlay],
                     view: new View({
                         center: x.view_options.center || [0, 0],
                         zoom: x.view_options.zoom || 2,
@@ -196,6 +216,17 @@ HTMLWidgets.widget({
                         extent: extent,
                     }),
                     loadTilesWhileAnimating: true
+                });
+
+                map.on("singleclick", function(evt) {
+                    const coordinate = evt.coordinate;
+                    var coordinate_longlat = olProj.transform(coordinate, projection, "EPSG:4326");
+                    console.log("xy: " + coordinate + ", longlat: " + coordinate_longlat);
+                    if (HTMLWidgets.shinyMode) {
+                        var lnglat = { x: coordinate[0], y: coordinate[1], long: coordinate_longlat[0], lat: coordinate_longlat[1] };
+                        Shiny.setInputValue(el.id + "_click", lnglat);
+                    }
+                    // TODO set popup content
                 });
 
                 // calls are any chained calls added with pipe operators to the initial map call
