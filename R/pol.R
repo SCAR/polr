@@ -11,7 +11,7 @@ pol <- function(view_options = list(), control_options = list(zoom = TRUE, rotat
     x <- list(view_options = view_options, control_options = control_options)
 
     ## create widget
-    htmlwidgets::createWidget(name = "pol", x, width = width, height = height, package = "polr", elementId = elementId)
+    htmlwidgets::createWidget(name = "pol", x, width = width, height = height, package = "polr", dependencies = pol_dependencies(), elementId = elementId)
 }
 
 #' Shiny bindings for pol
