@@ -4,7 +4,7 @@
 \alias{add_points}
 \title{Add points}
 \usage{
-add_points(map, lon, lat, style = NULL, options = NULL)
+add_points(map, lon, lat, style = NULL, popup = NULL, options = NULL)
 }
 \arguments{
 \item{map}{pol or pol_proxy: map to add the layer to}
@@ -14,6 +14,8 @@ add_points(map, lon, lat, style = NULL, options = NULL)
 \item{lat}{numeric: latitudes}
 
 \item{style}{: either a style object as returned by \code{\link[=pol_style]{pol_style()}} or a list of flat style properties: \url{https://openlayers.org/en/latest/apidoc/module-ol_style_flat.html}}
+
+\item{popup}{character: popups to show, one per point}
 
 \item{options}{list: vector layer options \url{https://openlayers.org/en/latest/apidoc/module-ol_layer_Vector-VectorLayer.html}}
 }

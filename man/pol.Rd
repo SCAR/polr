@@ -2,7 +2,7 @@
 % Please edit documentation in R/pol.R
 \name{pol}
 \alias{pol}
-\title{Create a polar openlayers map object}
+\title{Create a polar OpenLayers map object}
 \usage{
 pol(
   view_options = list(),
@@ -22,5 +22,5 @@ pol(
 \item{elementId}{string: element ID}
 }
 \description{
-Create a polar openlayers map object
+Create a polar OpenLayers map object
 }

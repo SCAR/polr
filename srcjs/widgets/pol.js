@@ -4,7 +4,7 @@ import proj4 from "proj4";
 import { register } from "ol/proj/proj4.js";
 import * as olProj from "ol/proj";
 
-import { defaults as control_defaults } from 'ol/control/defaults';
+import { defaults as control_defaults } from "ol/control/defaults";
 // openlayers
 import Map from "ol/Map.js";
 import View from "ol/View.js";
@@ -14,6 +14,8 @@ import GeoJSON from "ol/format/GeoJSON.js";
 import Feature from "ol/Feature.js";
 import Point from "ol/geom/Point.js";
 import MultiPoint from "ol/geom/MultiPoint.js";
+import * as olExtent from "ol/extent";
+
 // sources
 import GeoTIFF from "ol/source/GeoTIFF.js";
 import TileWMS from "ol/source/TileWMS.js";
@@ -65,20 +67,6 @@ HTMLWidgets.widget({
             return options;
         };
 
-        methods.add_fgb = function(url, style, flat_style, options) {
-            const source = new VectorSource();
-            const loader = createLoader(source, url);
-            source.setLoader(loader);
-            var layer = new VectorLayer(vector_source_with_options(source, options));
-            layer.set("title", layer.get("name"));
-            if (flat_style) {
-                layer.setStyle(flat_style);
-            } else {
-                layer.setStyle(make_style(style));
-            }
-            this.addLayer(layer);
-        }
-
         function read_geojson(data, data_proj, view_proj) {
             var features = new GeoJSON().readFeatures(data, {
                 dataProjection: data_proj, //?? || undefined,
@@ -108,7 +96,46 @@ HTMLWidgets.widget({
             return styleobj;
         }
 
-        methods.add_geojson = function(data, style, flat_style, options, data_proj) { // popup
+        function points_from_array(data, view_proj) {
+            var pts = [];
+            for (var pt of data) {
+                pts.push(new Feature({ geometry: new Point(olProj.fromLonLat(pt, view_proj)) }));
+            }
+            return pts;
+        }
+
+        // set a property on features
+        function set_feature_property(features, property_name, value) {
+            for (var i = 0; i < features.length; ++i) {
+                features[i].set(property_name, value instanceof Array ? value[i] : value);
+            }
+        }
+
+        function render_popup(feature, overlay, value) {
+            overlay.getElement().innerHTML = value;
+            var geometry = feature.getGeometry();
+            var extent = geometry.getExtent();
+            var anchor = olExtent.getCenter(extent);
+            var offset = geometry.getType() === "Point" ? [0, -10] : [0, 0];
+            overlay.setOffset(offset);
+            overlay.setPosition(anchor);
+        };
+
+        methods.add_fgb = function(url, style, flat_style, options) {
+            const source = new VectorSource();
+            const loader = createLoader(source, url);
+            source.setLoader(loader);
+            var layer = new VectorLayer(vector_source_with_options(source, options));
+            layer.set("title", layer.get("name"));
+            if (flat_style) {
+                layer.setStyle(flat_style);
+            } else {
+                layer.setStyle(make_style(style));
+            }
+            this.addLayer(layer);
+        }
+
+        methods.add_geojson = function(data, style, flat_style, popup, options, data_proj) {
             const view_proj = this.getView().getProjection();
             var features = read_geojson(data, data_proj, view_proj);
             var dataSource = new VectorSource({
@@ -121,26 +148,27 @@ HTMLWidgets.widget({
             } else {
                 layer.setStyle(make_style(style));
             }
+            if (popup) {
+                set_feature_property(features, "popup", popup); // set this on the feature
+                layer.set("popup_property", "popup");
+            }
             this.addLayer(layer);
         };
 
-        function points_from_array(data, view_proj) {
-            var pts = [];
-            for (var pt of data) {
-                pts.push(new Feature({ geometry: new Point(olProj.fromLonLat(pt, view_proj)) }));
-            }
-            return pts;
-        }
-
-        methods.add_points = function(data, style, flat_style, options) {
+        methods.add_points = function(data, style, flat_style, popup, options) {
+            const features = points_from_array(data, this.getView().getProjection());
             const source = new VectorSource({
-                features: points_from_array(data, this.getView().getProjection())
+                features: features,
             });
             const layer = new VectorLayer(vector_source_with_options(source, options));
             if (flat_style) {
                 layer.setStyle(flat_style);
             } else {
                 layer.setStyle(make_style(style));
+            }
+            if (popup) {
+                set_feature_property(features, "popup", popup); // set this on the feature
+                layer.set("popup_property", "popup");
             }
             this.addLayer(layer);
         }
@@ -180,7 +208,7 @@ HTMLWidgets.widget({
 
         return {
             renderValue: function(x) {
-                proj4.defs('EPSG:3031','+proj=stere +lat_0=-90 +lat_ts=-71 +lon_0=0 +k=1 +x_0=0 +y_0=0 +ellps=WGS84 +datum=WGS84 +units=m +no_defs');
+                proj4.defs("EPSG:3031","+proj=stere +lat_0=-90 +lat_ts=-71 +lon_0=0 +k=1 +x_0=0 +y_0=0 +ellps=WGS84 +datum=WGS84 +units=m +no_defs");
                 register(proj4);
 
                 const projection = x.view_options.projection || "EPSG:3031";
@@ -190,16 +218,14 @@ HTMLWidgets.widget({
                 // add container first
                 var popup_container = document.createElement("div");
                 popup_container.setAttribute("id", "popup_container");
+                popup_container.setAttribute("class", "pol-popup");
                 el.parentElement.insertBefore(popup_container, el.nextSibling);
                 const overlay = new Overlay({
                     element: popup_container,
-                    autoPan: {
-                        animation: {
-                            duration: 250,
-                        },
-                    },
+                    positioning: "bottom-center",
+                    autoPan: { animation: { duration: 250, }, },
                 });
-                popup_container.addEventListener('click', function() {
+                popup_container.addEventListener("click", function() {
                     overlay.setPosition(); // hide it
                 });
 
@@ -226,7 +252,15 @@ HTMLWidgets.widget({
                         var lnglat = { x: coordinate[0], y: coordinate[1], long: coordinate_longlat[0], lat: coordinate_longlat[1] };
                         Shiny.setInputValue(el.id + "_click", lnglat);
                     }
-                    // TODO set popup content
+                    // show popup for each feature at this pixel, if one has been defined
+                    map.forEachFeatureAtPixel(evt.pixel, function(feature, layer) {
+                        console.log("layer name:" + layer.get("name"));
+                        var popup_property = layer.get("popup_property");
+                        if (popup_property) {
+                            // if this layer has had a popup set, render it
+                            render_popup(feature, overlay, feature.get(popup_property));
+                        }
+                    });
                 });
 
                 // calls are any chained calls added with pipe operators to the initial map call

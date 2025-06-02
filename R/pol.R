@@ -1,4 +1,4 @@
-#' Create a polar openlayers map object
+#' Create a polar OpenLayers map object
 #'
 #' @param view_options list: <https://openlayers.org/en/latest/apidoc/module-ol_View.html#~ViewOptions>. By default the projection will be set to "EPSG:3031" (Antarctic polar stereographic)
 #' @param control_options list: <https://openlayers.org/en/latest/apidoc/module-ol_control_defaults.html#~DefaultsOptions>

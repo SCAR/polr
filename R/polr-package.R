@@ -1,6 +1,6 @@
 #' \pkg{polr}
 #'
-#' A minimal set of bindings to openlayers, with a focus on polar mapping applications.
+#' A minimal set of bindings to the OpenLayers javascript library, with a focus on polar mapping applications.
 #'
 #' @name polr
 #' @aliases polr-package

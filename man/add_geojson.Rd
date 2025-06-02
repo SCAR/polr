@@ -4,7 +4,15 @@
 \alias{add_geojson}
 \title{Add a geoJSON vector layer}
 \usage{
-add_geojson(map, data, file, style = NULL, options = NULL, data_proj = NULL)
+add_geojson(
+  map,
+  data,
+  file,
+  style = NULL,
+  popup = NULL,
+  options = NULL,
+  data_proj = NULL
+)
 }
 \arguments{
 \item{map}{pol or pol_proxy: map to add the layer to}
@@ -14,6 +22,8 @@ add_geojson(map, data, file, style = NULL, options = NULL, data_proj = NULL)
 \item{file}{string: path to geojson file}
 
 \item{style}{: either a style object as returned by \code{\link[=pol_style]{pol_style()}} or a list of flat style properties: \url{https://openlayers.org/en/latest/apidoc/module-ol_style_flat.html}}
+
+\item{popup}{character: popups to show, one per point}
 
 \item{options}{list: vector layer options \url{https://openlayers.org/en/latest/apidoc/module-ol_layer_Vector-VectorLayer.html}}
 
