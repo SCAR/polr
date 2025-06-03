@@ -4,7 +4,6 @@ import proj4 from "proj4";
 import { register } from "ol/proj/proj4.js";
 import * as olProj from "ol/proj";
 
-import { defaults as control_defaults } from "ol/control/defaults";
 // openlayers
 import Map from "ol/Map.js";
 import View from "ol/View.js";
@@ -15,6 +14,7 @@ import Feature from "ol/Feature.js";
 import Point from "ol/geom/Point.js";
 import MultiPoint from "ol/geom/MultiPoint.js";
 import * as olExtent from "ol/extent";
+import { defaults as control_defaults } from "ol/control/defaults";
 
 // sources
 import GeoTIFF from "ol/source/GeoTIFF.js";
@@ -28,10 +28,11 @@ import WebGLTile from "ol/layer/WebGLTile.js";
 
 import { createLoader } from "flatgeobuf/lib/mjs/ol.js";
 
+// ol-ext
+import LayerSwitcher from "ol-ext/control/LayerSwitcher.js";
+
 HTMLWidgets.widget({
-
     name: "pol",
-
     type: "output",
 
     factory: function(el, width, height) {
@@ -49,7 +50,6 @@ HTMLWidgets.widget({
             options.source = source;
             options.preload = true;
             options.crossOrigin = options.crossOrigin || "anonymous";
-            options.title = options.name || undefined;
             return options;
         };
 
@@ -126,7 +126,9 @@ HTMLWidgets.widget({
             const loader = createLoader(source, url);
             source.setLoader(loader);
             var layer = new VectorLayer(vector_source_with_options(source, options));
-            layer.set("title", layer.get("name"));
+            if (options.name) {
+                layer.set("name", options.name);
+            }
             if (flat_style) {
                 layer.setStyle(flat_style);
             } else {
@@ -142,7 +144,9 @@ HTMLWidgets.widget({
                 features: features
             });
             var layer = new VectorLayer(vector_source_with_options(dataSource, options));
-            layer.set("title", layer.get("name"));
+            if (options.name) {
+                layer.set("name", options.name);
+            }
             if (flat_style) {
                 layer.setStyle(flat_style);
             } else {
@@ -161,6 +165,9 @@ HTMLWidgets.widget({
                 features: features,
             });
             const layer = new VectorLayer(vector_source_with_options(source, options));
+            if (options.name) {
+                layer.set("name", options.name);
+            }
             if (flat_style) {
                 layer.setStyle(flat_style);
             } else {
@@ -179,13 +186,26 @@ HTMLWidgets.widget({
             tile_wms_options.params = params;
             //hidpi: false
             var source = new TileWMS(tile_wms_options);
-            this.addLayer(new TileLayer(tile_source_with_options(source, options)));
+            var l = new TileLayer(tile_source_with_options(source, options));
+            if (options.name) { l.set("name", options.name); }
+            this.addLayer(l);
         };
 
         methods.add_cog = function(sources, geotiff_source_options, options) {
             geotiff_source_options = geotiff_source_with_options(sources, geotiff_source_options);
             const source = new GeoTIFF(geotiff_source_options);
-            this.addLayer(new WebGLTile(tile_source_with_options(source, options)));
+            var l = new WebGLTile(tile_source_with_options(source, options));
+            if (options.name) { l.set("name", options.name); }
+            this.addLayer(l);
+        };
+
+
+        methods.add_layer_switcher = function() {
+            var ctrl = new LayerSwitcher({
+                // collapsed: false,
+                // mouseover: true
+            });
+            this.addControl(ctrl);
         };
 
         // handle proxy calls

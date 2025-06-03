@@ -3,6 +3,7 @@
 export(add_cog)
 export(add_fgb)
 export(add_geojson)
+export(add_layer_switcher)
 export(add_points)
 export(add_wms_tiles)
 export(pol)
