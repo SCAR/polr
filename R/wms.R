@@ -15,3 +15,20 @@ add_wms_tiles <- function(map, url, layers, wms_params = NULL, tile_wms_options 
     wms_params <- c(list(LAYERS = layers, TILED = TRUE), wms_params)
     invoke_method(map, "add_wms_tiles", url, wms_params, tile_wms_options, options)
 }
+
+#' Add WMTS tile layer to a map from a WMTS server capabilities endpoint
+#'
+#' @param map pol or pol_proxy: map to add the layer to
+#' @param url string: URL to the WMTSCapabilities.xml document
+#' @param layer string: layer name
+#' @param wmts_options named list: other WMTS options as per <https://openlayers.org/en/latest/apidoc/module-ol_source_WMTS.html#.optionsFromCapabilities>
+#' @param ... : named list of options as per <https://openlayers.org/en/latest/apidoc/module-ol_layer_Tile-TileLayer.html>
+#'
+#' @return A pol map object
+#'
+## @examples
+#' @export
+add_wmts_from_capabilities <- function(map, url, layer, wmts_options = list(), ...) {
+    wmts_options$layer <- layer
+    invoke_method(map, "add_wmts_from_capabilities", url, wmts_options, list(...))
+}

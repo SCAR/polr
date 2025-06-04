@@ -20,7 +20,11 @@ import { defaults as control_defaults } from "ol/control/defaults";
 import GeoTIFF from "ol/source/GeoTIFF.js";
 import TileWMS from "ol/source/TileWMS.js";
 import VectorSource from "ol/source/Vector.js";
+import WMTSCapabilities from "ol/format/WMTSCapabilities.js";
+import WMTS, {optionsFromCapabilities} from "ol/source/WMTS.js";
+
 // import OSM from "ol/source/OSM.js";
+
 // layers
 import TileLayer from "ol/layer/Tile.js";
 import VectorLayer from "ol/layer/Vector.js";
@@ -189,6 +193,23 @@ HTMLWidgets.widget({
             var l = new TileLayer(tile_source_with_options(source, options));
             if (options.name) { l.set("name", options.name); }
             this.addLayer(l);
+        };
+
+        methods.add_wmts_from_capabilities = function(url, wmts_options, options) {
+            options = options || {};
+            const parser = new WMTSCapabilities();
+            const map = this;
+            fetch(url) // url to 'WMTSCapabilities.xml
+                .then(function (response) {
+                    return response.text();
+                })
+                .then(function (text) {
+                    const result = parser.read(text);
+                    const wmts_source = new WMTS(optionsFromCapabilities(result, wmts_options));
+                    var l = new TileLayer(tile_source_with_options(wmts_source, options));
+                    if (options.name) { l.set("name", options.name); }
+                    map.addLayer(l);
+                });
         };
 
         methods.add_cog = function(sources, geotiff_source_options, options) {
