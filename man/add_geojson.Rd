@@ -4,15 +4,7 @@
 \alias{add_geojson}
 \title{Add a geoJSON vector layer}
 \usage{
-add_geojson(
-  map,
-  data,
-  file,
-  style = NULL,
-  popup = NULL,
-  options = NULL,
-  data_proj = NULL
-)
+add_geojson(map, data, file, style = NULL, popup = NULL, data_proj = NULL, ...)
 }
 \arguments{
 \item{map}{pol or pol_proxy: map to add the layer to}
@@ -25,9 +17,9 @@ add_geojson(
 
 \item{popup}{character: popups to show, one per point}
 
-\item{options}{list: vector layer options \url{https://openlayers.org/en/latest/apidoc/module-ol_layer_Vector-VectorLayer.html}}
-
 \item{data_proj}{string: the projection code of the geojson data. If omitted, it will be derived from the data where possible. If it cannot, the data will not be reprojected to the map's projection}
+
+\item{...}{: named vector layer options \url{https://openlayers.org/en/latest/apidoc/module-ol_layer_Vector-VectorLayer.html}}
 }
 \value{
 A pol map object

@@ -4,7 +4,7 @@
 \alias{add_cog}
 \title{Add cloud-optimised geotiff layer}
 \usage{
-add_cog(map, sources, geotiff_source_options = NULL, options = NULL)
+add_cog(map, sources, geotiff_source_options = NULL, ...)
 }
 \arguments{
 \item{map}{pol or pol_proxy: map to add the layer to}
@@ -13,7 +13,7 @@ add_cog(map, sources, geotiff_source_options = NULL, options = NULL)
 
 \item{geotiff_source_options}{list: geotiff source options \url{https://openlayers.org/en/latest/apidoc/module-ol_source_GeoTIFF.html#~GeoTIFFSourceOptions}}
 
-\item{options}{list: tile source options \url{https://openlayers.org/en/latest/apidoc/module-ol_source_Tile-TileSource.html}}
+\item{...}{: named webGL tile source options \url{https://openlayers.org/en/latest/apidoc/module-ol_layer_WebGLTile.html}}
 }
 \value{
 A pol map object

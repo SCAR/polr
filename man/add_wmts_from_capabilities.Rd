@@ -15,7 +15,7 @@ add_wmts_from_capabilities(map, url, layer, wmts_options = list(), ...)
 
 \item{wmts_options}{named list: other WMTS options as per \url{https://openlayers.org/en/latest/apidoc/module-ol_source_WMTS.html#.optionsFromCapabilities}}
 
-\item{...}{: named list of options as per \url{https://openlayers.org/en/latest/apidoc/module-ol_layer_Tile-TileLayer.html}}
+\item{...}{: named options as per \url{https://openlayers.org/en/latest/apidoc/module-ol_layer_Tile-TileLayer.html}}
 }
 \value{
 A pol map object

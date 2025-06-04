@@ -4,7 +4,7 @@
 \alias{add_points}
 \title{Add points}
 \usage{
-add_points(map, lon, lat, style = NULL, popup = NULL, options = NULL)
+add_points(map, lon, lat, style = NULL, popup = NULL, ...)
 }
 \arguments{
 \item{map}{pol or pol_proxy: map to add the layer to}
@@ -17,7 +17,7 @@ add_points(map, lon, lat, style = NULL, popup = NULL, options = NULL)
 
 \item{popup}{character: popups to show, one per point}
 
-\item{options}{list: vector layer options \url{https://openlayers.org/en/latest/apidoc/module-ol_layer_Vector-VectorLayer.html}}
+\item{...}{: named vector layer options \url{https://openlayers.org/en/latest/apidoc/module-ol_layer_Vector-VectorLayer.html}}
 }
 \value{
 A pol map object

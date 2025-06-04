@@ -4,7 +4,7 @@
 \alias{add_fgb}
 \title{Add a flatgeobuf vector layer}
 \usage{
-add_fgb(map, url, file, style = NULL, options = NULL)
+add_fgb(map, url, file, style = NULL, ...)
 }
 \arguments{
 \item{map}{pol or pol_proxy: map to add the layer to}
@@ -13,9 +13,9 @@ add_fgb(map, url, file, style = NULL, options = NULL)
 
 \item{file}{string: path to the flatgeobuf file. Note that \code{file} will only work with Shiny, not in standalone htmlwidgets or rmarkdown files}
 
-\item{style}{: either a style object as returned by \code{\link[=pol_style]{pol_style()}} or a list of flat style properties: \url{https://openlayers.org/en/latest/apidoc/module-ol_style_flat.html}}
+\item{style}{: either a style object as returned by \code{\link[=pol_style]{pol_style()}} or a list of flat style properties \url{https://openlayers.org/en/latest/apidoc/module-ol_style_flat.html}}
 
-\item{options}{list: vector layer options \url{https://openlayers.org/en/latest/apidoc/module-ol_layer_Vector-VectorLayer.html}}
+\item{...}{: named vector layer options \url{https://openlayers.org/en/latest/apidoc/module-ol_layer_Vector-VectorLayer.html}}
 }
 \value{
 A pol map object

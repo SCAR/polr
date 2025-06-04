@@ -126,6 +126,7 @@ HTMLWidgets.widget({
         };
 
         methods.add_fgb = function(url, style, flat_style, options) {
+            options = options || {};
             const source = new VectorSource();
             const loader = createLoader(source, url);
             source.setLoader(loader);
@@ -141,7 +142,8 @@ HTMLWidgets.widget({
             this.addLayer(layer);
         }
 
-        methods.add_geojson = function(data, style, flat_style, popup, options, data_proj) {
+        methods.add_geojson = function(data, style, flat_style, popup, data_proj, options) {
+            options = options || {};
             const view_proj = this.getView().getProjection();
             var features = read_geojson(data, data_proj, view_proj);
             var dataSource = new VectorSource({
@@ -164,6 +166,7 @@ HTMLWidgets.widget({
         };
 
         methods.add_points = function(data, style, flat_style, popup, options) {
+            options = options || {};
             const features = points_from_array(data, this.getView().getProjection());
             const source = new VectorSource({
                 features: features,
@@ -185,6 +188,7 @@ HTMLWidgets.widget({
         }
 
         methods.add_wms_tiles = function(url, params, tile_wms_options, options) {
+            options = options || {};
             tile_wms_options = tile_wms_options || {};
             tile_wms_options.url = url;
             tile_wms_options.params = params;
@@ -213,6 +217,7 @@ HTMLWidgets.widget({
         };
 
         methods.add_cog = function(sources, geotiff_source_options, options) {
+            options = options || {};
             geotiff_source_options = geotiff_source_with_options(sources, geotiff_source_options);
             const source = new GeoTIFF(geotiff_source_options);
             var l = new WebGLTile(tile_source_with_options(source, options));

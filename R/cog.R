@@ -3,14 +3,14 @@
 #' @param map pol or pol_proxy: map to add the layer to
 #' @param sources : either a character vector of one or more URLs, or a list of `pol_geotiff_source` objects
 #' @param geotiff_source_options list: geotiff source options <https://openlayers.org/en/latest/apidoc/module-ol_source_GeoTIFF.html#~GeoTIFFSourceOptions>
-#' @param options list: tile source options <https://openlayers.org/en/latest/apidoc/module-ol_source_Tile-TileSource.html>
+#' @param ... : named webGL tile source options <https://openlayers.org/en/latest/apidoc/module-ol_layer_WebGLTile.html>
 #'
 #' @return A pol map object
 #'
 ## @examples
 #' @export
 add_cog <- function(map, sources,
-                    geotiff_source_options = NULL, options = NULL) {
+                    geotiff_source_options = NULL, ...) {
     if (is.character(sources)) {
         sources <- as.list(sources)
     } else if (inherits(sources, "pol_geotiff_source")) {
@@ -27,7 +27,7 @@ add_cog <- function(map, sources,
         }
         src
     })
-    invoke_method(map, "add_cog", sources, geotiff_source_options, options)
+    invoke_method(map, "add_cog", sources, geotiff_source_options, list(...))
 }
 
 #' Create a geotiff source

@@ -10,7 +10,7 @@ add_wms_tiles(
   layers,
   wms_params = NULL,
   tile_wms_options = list(),
-  options = list()
+  ...
 )
 }
 \arguments{
@@ -24,7 +24,7 @@ add_wms_tiles(
 
 \item{tile_wms_options}{list: \url{https://openlayers.org/en/latest/apidoc/module-ol_source_TileWMS-TileWMS.html}}
 
-\item{options}{list: \url{https://openlayers.org/en/latest/apidoc/module-ol_layer_Tile-TileLayer.html}}
+\item{...}{: named tile layer options \url{https://openlayers.org/en/latest/apidoc/module-ol_layer_Tile-TileLayer.html}}
 }
 \value{
 A pol map object
