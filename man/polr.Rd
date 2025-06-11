@@ -11,8 +11,8 @@ A minimal set of bindings to the OpenLayers javascript library, with a focus on 
 \seealso{
 Useful links:
 \itemize{
-  \item \url{https://github.com/SCAR-sandpit/polr/}
-  \item Report bugs at \url{https://github.com/SCAR-sandpit/polr/issues/}
+  \item \url{https://github.com/SCAR/polr/}
+  \item Report bugs at \url{https://github.com/SCAR/polr/issues/}
 }
 
 }

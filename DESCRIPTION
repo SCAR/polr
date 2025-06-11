@@ -6,8 +6,8 @@ Authors@R:
       person("Stefan", "Kuethe", email = "crazycapivara@gmail.com", role = "ctb", comment = "Author of https://github.com/crazycapivara/openlayers/, of which polr is a reimplementation and extension (of a sort)"),
       person("OpenLayers contributors", role = "ctb", comment = "OpenLayers javascript library"))
 Description: A minimal set of bindings to the OpenLayers javascript library, with a focus on polar mapping applications.
-URL: https://github.com/SCAR-sandpit/polr/
-BugReports: https://github.com/SCAR-sandpit/polr/issues/
+URL: https://github.com/SCAR/polr/
+BugReports: https://github.com/SCAR/polr/issues/
 License: MIT + file LICENSE
 Encoding: UTF-8
 Roxygen: list(markdown = TRUE)

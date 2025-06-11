@@ -23,7 +23,7 @@ The goal of polr is to provide bindings to the openlayers javascript library, wi
 ## Installation
 
 ``` r
-remotes::install_github("SCAR-sandpit/polr")
+remotes::install_github("SCAR/polr")
 
 ```
 

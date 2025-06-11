@@ -12,7 +12,7 @@ library, with a focus on polar mapping applications.
 ## Installation
 
 ``` r
-remotes::install_github("SCAR-sandpit/polr")
+remotes::install_github("SCAR/polr")
 ```
 
 ## Example usage
