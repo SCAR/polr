@@ -20,6 +20,7 @@ import { defaults as control_defaults } from "ol/control/defaults";
 import GeoTIFF from "ol/source/GeoTIFF.js";
 import TileWMS from "ol/source/TileWMS.js";
 import VectorSource from "ol/source/Vector.js";
+import Cluster from "ol/source/Cluster.js";
 import WMTSCapabilities from "ol/format/WMTSCapabilities.js";
 import WMTS, {optionsFromCapabilities} from "ol/source/WMTS.js";
 
@@ -81,18 +82,32 @@ HTMLWidgets.widget({
 
         // https://openlayers.org/en/latest/apidoc/module-ol_style_Text-Text.html
         function make_text_style(style) {
-            style.stroke = style.stroke ? new olStyle.Stroke(style.stroke) : null;
-            style.fill = style.fill ? new olStyle.Fill(style.fill) : null;
-            style.backgroundStroke = style.backgroundStroke ? new olStyle.Stroke(style.backgroundStroke) : null;
-            style.backgroundFill = style.backgroundFill ? new olStyle.Fill(style.backgroundFill) : null;
-            return new olStyle.Text(style);
+            let this_style = JSON.parse(JSON.stringify(style)); // clone
+            this_style.stroke = this_style.stroke ? new olStyle.Stroke(this_style.stroke) : null;
+            this_style.fill = this_style.fill ? new olStyle.Fill(this_style.fill) : null;
+            this_style.backgroundStroke = this_style.backgroundStroke ? new olStyle.Stroke(this_style.backgroundStroke) : null;
+            this_style.backgroundFill = this_style.backgroundFill ? new olStyle.Fill(this_style.backgroundFill) : null;
+            return new olStyle.Text(this_style);
         }
+
+        function make_circle_style(style) {
+            let this_style = JSON.parse(JSON.stringify(style)); // clone
+            this_style.radius = this_style.radius || 10;
+            this_style.stroke = this_style.stroke ? new olStyle.Stroke(this_style.stroke) : null;
+            this_style.fill = this_style.fill ? new olStyle.Fill(this_style.fill) : null;
+            return new olStyle.Circle(this_style);
+        }
+
+        // TODO make_regular_shape_style
 
         // https://openlayers.org/en/latest/apidoc/module-ol_style_Style.html
         function make_style(style) {
             var styleobj = new olStyle.Style({
                 fill: style.fill ? new olStyle.Fill(style.fill) : null,
                 image: style.image ? new olStyle.Image(style.image) : null,
+                image: style.icon ? new olStyle.Icon(style.icon) : null,
+                image: style.shape ? new olStyle.RegularShape(style.shape) : null,
+                image: style.circle ? make_circle_style(style.circle) : null,
                 stroke: style.stroke ? new olStyle.Stroke(style.stroke) : null,
                 text: style.text ? make_text_style(style.text) : null,
                 zIndex:  style.zIndex
@@ -180,6 +195,50 @@ HTMLWidgets.widget({
             } else {
                 layer.setStyle(make_style(style));
             }
+            if (popup) {
+                set_feature_property(features, "popup", popup); // set this on the feature
+                layer.set("popup_property", "popup");
+            }
+            this.addLayer(layer);
+        }
+
+        methods.add_clustered_points = function(data, cluster_style, marker_style, popup, cluster_options, options) {
+            options = options || {};
+            cluster_options = cluster_options || {};
+            cluster_style = make_style(cluster_style);
+            marker_style = make_style(marker_style);
+            const features = points_from_array(data, this.getView().getProjection());
+            const source = new VectorSource({
+                features: features,
+            });
+            const clusterSource = new Cluster({
+                distance: parseInt(cluster_options.distance || 20),
+                minDistance: parseInt(cluster_options.min_distance || 0),
+                source: source,
+            });
+
+            const styleCache = {};
+            const layer = new VectorLayer({
+                source: clusterSource,
+                style: function (feature) {
+                    const size = feature.get('features').length;
+                    if (size > 1) {
+                        let this_style = styleCache[size];
+                        if (!this_style) {
+                            this_style = cluster_style.clone();
+                            this_style.getText().setText(size.toString()); // text indicates number of features in cluster
+                            styleCache[size] = this_style;
+                        }
+                        return this_style;
+                    }
+                    // otherwise the cluster contains only one feature
+                    return marker_style;
+                },
+            });
+            if (options.name) {
+                layer.set("name", options.name);
+            }
+
             if (popup) {
                 set_feature_property(features, "popup", popup); // set this on the feature
                 layer.set("popup_property", "popup");
@@ -291,6 +350,7 @@ HTMLWidgets.widget({
                 });
 
                 map.on("singleclick", function(evt) {
+                    overlay.setPosition(); // hide any existing popup
                     const coordinate = evt.coordinate;
                     var coordinate_longlat = olProj.transform(coordinate, projection, "EPSG:4326");
                     console.log("xy: " + coordinate + ", longlat: " + coordinate_longlat);
@@ -300,11 +360,17 @@ HTMLWidgets.widget({
                     }
                     // show popup for each feature at this pixel, if one has been defined
                     map.forEachFeatureAtPixel(evt.pixel, function(feature, layer) {
-                        console.log("layer name:" + layer.get("name"));
                         var popup_property = layer.get("popup_property");
-                        if (popup_property) {
-                            // if this layer has had a popup set, render it
-                            render_popup(feature, overlay, feature.get(popup_property));
+                        if (popup_property) { // does this layer have popups?
+                            // render the popup for this feature, noting that if this is a clustered point layer then `feature` is a cluster, not a feature directly
+                            const clust_features = feature.get("features");
+                            if (clust_features) {
+                                if (clust_features.length == 1) {
+                                    render_popup(clust_features[0], overlay, clust_features[0].get(popup_property));
+                                } // don't render a popup if a cluster marker with multiple features has been clicked
+                            } else {
+                                render_popup(feature, overlay, feature.get(popup_property));
+                            }
                         }
                     });
                 });

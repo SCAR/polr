@@ -7,6 +7,9 @@
 pol_style(
   fill = NULL,
   image = NULL,
+  icon = NULL,
+  shape = NULL,
+  circle = NULL,
   stroke = NULL,
   text = NULL,
   z_index = NULL
@@ -15,7 +18,13 @@ pol_style(
 \arguments{
 \item{fill}{list: \url{https://openlayers.org/en/latest/apidoc/module-ol_style_Fill-Fill.html}}
 
-\item{image}{list: \url{https://openlayers.org/en/latest/apidoc/module-ol_style_Image-ImageStyle.html} or \url{https://openlayers.org/en/latest/apidoc/module-ol_style_Icon-Icon.html} or \url{https://openlayers.org/en/latest/apidoc/module-ol_style_RegularShape-RegularShape.html}}
+\item{image}{list: \url{https://openlayers.org/en/latest/apidoc/module-ol_style_Image-ImageStyle.html}}
+
+\item{icon}{list: \url{https://openlayers.org/en/latest/apidoc/module-ol_style_Icon-Icon.html}}
+
+\item{shape}{list: \url{https://openlayers.org/en/latest/apidoc/module-ol_style_RegularShape-RegularShape.html}}
+
+\item{circle}{list: \url{https://openlayers.org/en/latest/apidoc/module-ol_style_Circle-CircleStyle.html}}
 
 \item{stroke}{list: \url{https://openlayers.org/en/latest/apidoc/module-ol_style_Stroke-Stroke.html}}
 
