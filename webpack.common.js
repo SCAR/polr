@@ -61,6 +61,8 @@ var options = {
   output: {
     filename: '[name].js',
     path: path.resolve(__dirname, JSON.parse(outputPath)),
+    publicPath: '',
+    chunkFormat: false,
   },
   externals: externals,
   module: {
