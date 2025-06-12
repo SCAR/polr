@@ -282,12 +282,27 @@ HTMLWidgets.widget({
             this.on("pointermove", (event) => {
                 layer.getFeatures(event.pixel).then((features) => {
                     if (features[0] !== hoverFeature) {
-                        // Display the convex hull on hover.
+                        // display the convex hull on hover.
                         hoverFeature = features[0];
                         clusterHulls.setStyle(clusterHullStyle);
-                        // Change the cursor style to indicate that the cluster is clickable.
-                        map.getTargetElement().style.cursor =
-                            hoverFeature && hoverFeature.get("features").length > 1 ? "pointer" : "";
+                        // cursor style is changed in the pointermove listener in the main map constructor call
+                    }
+                });
+            });
+            this.on("click", (event) => {
+                layer.getFeatures(event.pixel).then((features) => {
+                    if (features.length > 0) {
+                        const clusterMembers = features[0].get("features");
+                        if (clusterMembers.length > 1) {
+                            // Calculate the extent of the cluster members.
+                            const extent = olExtent.createEmpty();
+                            clusterMembers.forEach((feature) =>
+                                olExtent.extend(extent, feature.getGeometry().getExtent()),
+                            );
+                            const view = this.getView();
+                            // zoom to the extent of the cluster members.
+                            view.fit(extent, { duration: 500, padding: [50, 50, 50, 50] });
+                        }
                     }
                 });
             });
@@ -407,7 +422,7 @@ HTMLWidgets.widget({
                     }
                     // show popup for each feature at this pixel, if one has been defined
                     map.forEachFeatureAtPixel(evt.pixel, function(feature, layer) {
-                        var popup_property = layer.get("popup_property");
+                        const popup_property = layer.get("popup_property");
                         if (popup_property) { // does this layer have popups?
                             // render the popup for this feature, noting that if this is a clustered point layer then `feature` is a cluster, not a feature directly
                             const clust_features = feature.get("features");
@@ -420,6 +435,19 @@ HTMLWidgets.widget({
                             }
                         }
                     });
+                });
+
+                map.on("pointermove", (event) => {
+                    var pointer = false;
+                    map.forEachFeatureAtPixel(event.pixel, function(feature, layer) {
+                        // if the map has a layer with popups and a feature at this point, or a clustered feature at this point with more than one member feature, then it's clickable and we show a pointer cursor
+                        const popup_property = layer.get("popup_property");
+                        const clust_features = feature.get("features");
+                        if ((clust_features && clust_features.length > 1) || popup_property) {
+                            pointer = true;
+                        }
+                    });
+                    map.getTargetElement().style.cursor = pointer ? "pointer" : "";
                 });
 
                 // calls are any chained calls added with pipe operators to the initial map call
