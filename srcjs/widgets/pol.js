@@ -248,6 +248,7 @@ HTMLWidgets.widget({
                 source: clusterSource,
                 style: clusterHullStyle,
             });
+            clusterHulls.set("no_legend", true);
 
             const styleCache = {};
             const layer = new VectorLayer({
@@ -351,6 +352,14 @@ HTMLWidgets.widget({
             var ctrl = new LayerSwitcher({
                 // collapsed: false,
                 // mouseover: true
+            });
+            ctrl.on("drawlist", function(e) {
+                // hide cluster hull layers, see https://github.com/Viglino/ol-ext/blob/master/examples/control/map.switcher.filter.html
+                if (e.layer.get("no_legend")) {
+                    e.li.style.display = "none";
+                } else {
+                    e.li.style.display = "block";
+                }
             });
             this.addControl(ctrl);
         };
