@@ -28,6 +28,7 @@ add_points <- function(map, lon, lat, style = NULL, popup = NULL, ...) {
 #' @param lon numeric: longitudes
 #' @param lat numeric: latitudes
 #' @param cluster_style : a style object as returned by [pol_style()] for the cluster markers, typically with components `text` and `circle`
+#' @param cluster_hull_style : a style object as returned by [pol_style()] for the cluster convex hulls, with components `fill` and `stroke`
 #' @param marker_style : a style object as returned by [pol_style()] for single markers (i.e. when a cluster has reduced to a single feature)
 #' @param popup character: popups to show, one per point
 #' @param cluster_options list: named list with components `distance` and `min_distance` (as for <https://openlayers.org/en/latest/apidoc/module-ol_source_Cluster-Cluster.html>)
@@ -35,13 +36,17 @@ add_points <- function(map, lon, lat, style = NULL, popup = NULL, ...) {
 #'
 #' @return A pol map object
 #' @export
-add_clustered_points <- function(map, lon, lat, cluster_style = NULL, marker_style = NULL, popup = NULL, cluster_options = list(distance = 10, min_distance = 0), ...) {
+add_clustered_points <- function(map, lon, lat, cluster_style = NULL, cluster_hull_style = NULL, marker_style = NULL, popup = NULL, cluster_options = list(distance = 10, min_distance = 0), ...) {
     data <- lapply(seq_along(lon), function(i) c(lon[i], lat[i]))
     ## default styles
-    if (is.null(cluster_style)) cluster_style <- pol_style(
-                                    circle = list(radius = 10, stroke = list(color = "#fff"), fill = list(color = "#3399CC")),
-                                    text = list(text = "", ## populated dynamically
-                                                fill = list(color = "#fff")))
+    if (is.null(cluster_style)) {
+        cluster_style <- pol_style(circle = list(radius = 10, stroke = list(color = "#fff"), fill = list(color = "#3399CC")),
+                                   text = list(text = "", fill = list(color = "#fff"))) ## text is populated dynamically
+    }
+    if (is.null(cluster_hull_style)) {
+        cluster_hull_style <- pol_style(fill = list(color = "rgba(255, 153, 0, 0.4)"),
+                                        stroke = list(color = "rgba(204, 85, 0, 1)", width = 1.5))
+    }
     if (is.null(marker_style)) marker_style <- pol_style(text = list(text = "\uf041", font = "normal 22px FontAwesome", fill = list(color = "#00c")))
-    invoke_method(map, "add_clustered_points", data, cluster_style, marker_style, popup, cluster_options, list(...))
+    invoke_method(map, "add_clustered_points", data, cluster_style, cluster_hull_style, marker_style, popup, cluster_options, list(...))
 }

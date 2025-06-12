@@ -13,6 +13,7 @@ import GeoJSON from "ol/format/GeoJSON.js";
 import Feature from "ol/Feature.js";
 import Point from "ol/geom/Point.js";
 import MultiPoint from "ol/geom/MultiPoint.js";
+import Polygon from "ol/geom/Polygon.js";
 import * as olExtent from "ol/extent";
 import { defaults as control_defaults } from "ol/control/defaults";
 
@@ -35,6 +36,9 @@ import { createLoader } from "flatgeobuf/lib/mjs/ol.js";
 
 // ol-ext
 import LayerSwitcher from "ol-ext/control/LayerSwitcher.js";
+
+// other
+import monotoneChainConvexHull from "monotone-chain-convex-hull";
 
 HTMLWidgets.widget({
     name: "pol",
@@ -202,7 +206,7 @@ HTMLWidgets.widget({
             this.addLayer(layer);
         }
 
-        methods.add_clustered_points = function(data, cluster_style, marker_style, popup, cluster_options, options) {
+        methods.add_clustered_points = function(data, cluster_style, cluster_hull_style, marker_style, popup, cluster_options, options) {
             options = options || {};
             cluster_options = cluster_options || {};
             cluster_style = make_style(cluster_style);
@@ -217,11 +221,39 @@ HTMLWidgets.widget({
                 source: source,
             });
 
+            // show convex hull of clusters on hover: https://openlayers.org/en/latest/examples/clusters-dynamic.html
+            let hoverFeature;
+            /**
+             * Style for convex hulls of clusters, activated on hover.
+             * @param {Feature} cluster The cluster feature.
+             * @return {Style|null} Polygon style for the convex hull of the cluster.
+             */
+            const convex_hull_fill = new olStyle.Fill(cluster_hull_style.fill);
+            const convex_hull_stroke = new olStyle.Stroke(cluster_hull_style.stroke);
+            function clusterHullStyle(cluster) {
+                if (cluster !== hoverFeature) {
+                    return null;
+                }
+                const originalFeatures = cluster.get("features");
+                const points = originalFeatures.map((feature) =>
+                    feature.getGeometry().getCoordinates(),
+                );
+                return new olStyle.Style({
+                    geometry: new Polygon([monotoneChainConvexHull(points)]),
+                    fill: convex_hull_fill,
+                    stroke: convex_hull_stroke,
+                });
+            }
+            const clusterHulls = new VectorLayer({
+                source: clusterSource,
+                style: clusterHullStyle,
+            });
+
             const styleCache = {};
             const layer = new VectorLayer({
                 source: clusterSource,
                 style: function (feature) {
-                    const size = feature.get('features').length;
+                    const size = feature.get("features").length;
                     if (size > 1) {
                         let this_style = styleCache[size];
                         if (!this_style) {
@@ -244,6 +276,21 @@ HTMLWidgets.widget({
                 layer.set("popup_property", "popup");
             }
             this.addLayer(layer);
+            this.addLayer(clusterHulls);
+
+            // show convex hull on hover
+            this.on("pointermove", (event) => {
+                layer.getFeatures(event.pixel).then((features) => {
+                    if (features[0] !== hoverFeature) {
+                        // Display the convex hull on hover.
+                        hoverFeature = features[0];
+                        clusterHulls.setStyle(clusterHullStyle);
+                        // Change the cursor style to indicate that the cluster is clickable.
+                        map.getTargetElement().style.cursor =
+                            hoverFeature && hoverFeature.get("features").length > 1 ? "pointer" : "";
+                    }
+                });
+            });
         }
 
         methods.add_wms_tiles = function(url, params, tile_wms_options, options) {
@@ -262,7 +309,7 @@ HTMLWidgets.widget({
             options = options || {};
             const parser = new WMTSCapabilities();
             const map = this;
-            fetch(url) // url to 'WMTSCapabilities.xml
+            fetch(url) // url to WMTSCapabilities.xml
                 .then(function (response) {
                     return response.text();
                 })

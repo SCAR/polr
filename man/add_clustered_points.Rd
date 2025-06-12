@@ -9,6 +9,7 @@ add_clustered_points(
   lon,
   lat,
   cluster_style = NULL,
+  cluster_hull_style = NULL,
   marker_style = NULL,
   popup = NULL,
   cluster_options = list(distance = 10, min_distance = 0),
@@ -23,6 +24,8 @@ add_clustered_points(
 \item{lat}{numeric: latitudes}
 
 \item{cluster_style}{: a style object as returned by \code{\link[=pol_style]{pol_style()}} for the cluster markers, typically with components \code{text} and \code{circle}}
+
+\item{cluster_hull_style}{: a style object as returned by \code{\link[=pol_style]{pol_style()}} for the cluster convex hulls, with components \code{fill} and \code{stroke}}
 
 \item{marker_style}{: a style object as returned by \code{\link[=pol_style]{pol_style()}} for single markers (i.e. when a cluster has reduced to a single feature)}
 
