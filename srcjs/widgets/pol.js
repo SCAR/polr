@@ -150,12 +150,10 @@ HTMLWidgets.widget({
             const loader = createLoader(source, url);
             source.setLoader(loader);
             var layer = new VectorLayer(vector_source_with_options(source, options));
-            if (options.name) {
-                layer.set("name", options.name);
-            }
+            layer.set("name", options.name ? options.name : "Unnamed layer");
             if (flat_style) {
                 layer.setStyle(flat_style);
-            } else {
+            } else if (style) {
                 layer.setStyle(make_style(style));
             }
             this.addLayer(layer);
@@ -169,12 +167,10 @@ HTMLWidgets.widget({
                 features: features
             });
             var layer = new VectorLayer(vector_source_with_options(dataSource, options));
-            if (options.name) {
-                layer.set("name", options.name);
-            }
+            layer.set("name", options.name ? options.name : "Unnamed layer");
             if (flat_style) {
                 layer.setStyle(flat_style);
-            } else {
+            } else if (style) {
                 layer.setStyle(make_style(style));
             }
             if (popup) {
@@ -191,12 +187,10 @@ HTMLWidgets.widget({
                 features: features,
             });
             const layer = new VectorLayer(vector_source_with_options(source, options));
-            if (options.name) {
-                layer.set("name", options.name);
-            }
+            layer.set("name", options.name ? options.name : "Unnamed layer");
             if (flat_style) {
                 layer.setStyle(flat_style);
-            } else {
+            } else if (style) {
                 layer.setStyle(make_style(style));
             }
             if (popup) {
@@ -249,6 +243,7 @@ HTMLWidgets.widget({
                 style: clusterHullStyle,
             });
             clusterHulls.set("no_legend", true);
+            clusterHulls.set("name", options.name ? options.name + " cluster hulls" : "Unnamed layer cluster hulls");
 
             const styleCache = {};
             const layer = new VectorLayer({
@@ -268,9 +263,7 @@ HTMLWidgets.widget({
                     return marker_style;
                 },
             });
-            if (options.name) {
-                layer.set("name", options.name);
-            }
+            layer.set("name", options.name ? options.name : "Unnamed layer");
 
             if (popup) {
                 set_feature_property(features, "popup", popup); // set this on the feature
@@ -317,7 +310,7 @@ HTMLWidgets.widget({
             //hidpi: false
             var source = new TileWMS(tile_wms_options);
             var l = new TileLayer(tile_source_with_options(source, options));
-            if (options.name) { l.set("name", options.name); }
+            l.set("name", options.name ? options.name : "Unnamed layer");
             this.addLayer(l);
         };
 
@@ -333,7 +326,7 @@ HTMLWidgets.widget({
                     const result = parser.read(text);
                     const wmts_source = new WMTS(optionsFromCapabilities(result, wmts_options));
                     var l = new TileLayer(tile_source_with_options(wmts_source, options));
-                    if (options.name) { l.set("name", options.name); }
+                    l.set("name", options.name ? options.name : "Unnamed layer");
                     map.addLayer(l);
                 });
         };
@@ -343,7 +336,7 @@ HTMLWidgets.widget({
             geotiff_source_options = geotiff_source_with_options(sources, geotiff_source_options);
             const source = new GeoTIFF(geotiff_source_options);
             var l = new WebGLTile(tile_source_with_options(source, options));
-            if (options.name) { l.set("name", options.name); }
+            l.set("name", options.name ? options.name : "Unnamed layer");
             this.addLayer(l);
         };
 
