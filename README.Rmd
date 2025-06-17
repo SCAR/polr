@@ -25,6 +25,10 @@ The goal of polr is to provide bindings to the [OpenLayers](https://openlayers.o
 ``` r
 remotes::install_github("SCAR/polr")
 
+## or
+
+install.packages('polr', repos = c('https://scar.r-universe.dev', 'https://cloud.r-project.org'))
+
 ```
 
 ## Example usage

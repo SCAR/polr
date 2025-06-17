@@ -14,6 +14,10 @@ on polar mapping applications.
 
 ``` r
 remotes::install_github("SCAR/polr")
+
+## or
+
+install.packages('polr', repos = c('https://scar.r-universe.dev', 'https://cloud.r-project.org'))
 ```
 
 ## Example usage
