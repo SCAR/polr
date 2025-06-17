@@ -20,5 +20,6 @@ add_geojson <- function(map, data, file, style = NULL, popup = NULL, data_proj =
     } else {
         flat_style <- NULL
     }
-    invoke_method(map, "add_geojson", data, style, flat_style, popup, data_proj, list(...))
+    props <- list() ## extra properties to set, currently none
+    invoke_method(map, "add_geojson", data, style, flat_style, popup, data_proj, props, list(...))
 }

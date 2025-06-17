@@ -159,7 +159,7 @@ HTMLWidgets.widget({
             this.addLayer(layer);
         }
 
-        methods.add_geojson = function(data, style, flat_style, popup, data_proj, options) {
+        methods.add_geojson = function(data, style, flat_style, popup, data_proj, properties, options) {
             options = options || {};
             const view_proj = this.getView().getProjection();
             var features = read_geojson(data, data_proj, view_proj);
@@ -176,6 +176,11 @@ HTMLWidgets.widget({
             if (popup) {
                 set_feature_property(features, "popup", popup); // set this on the feature
                 layer.set("popup_property", "popup");
+            }
+            if (properties) {
+                for (var pn in properties) {
+                    layer.set(pn, properties[pn]);
+                }
             }
             this.addLayer(layer);
         };

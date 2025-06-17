@@ -12,6 +12,7 @@ add_graticule(
   xlim = range(lons),
   ylim = range(lats),
   style = NULL,
+  no_legend = TRUE,
   ...
 )
 }
@@ -29,6 +30,8 @@ add_graticule(
 \item{ylim}{numeric: maximum range of meridional lines}
 
 \item{style}{: either a style object as returned by \code{\link[=pol_style]{pol_style()}} or a list of flat style properties: \url{https://openlayers.org/en/latest/apidoc/module-ol_style_flat.html}}
+
+\item{no_legend}{logical: if \code{TRUE}, don't include this layer in the layer switcher legend}
 
 \item{...}{: named vector layer options \url{https://openlayers.org/en/latest/apidoc/module-ol_layer_Vector-VectorLayer.html}}
 }

@@ -7,13 +7,14 @@
 #' @param xlim numeric: maximum range of parallel lines
 #' @param ylim numeric: maximum range of meridional lines
 #' @param style : either a style object as returned by [pol_style()] or a list of flat style properties: <https://openlayers.org/en/latest/apidoc/module-ol_style_flat.html>
+#' @param no_legend logical: if `TRUE`, don't include this layer in the layer switcher legend
 #' @param ... : named vector layer options <https://openlayers.org/en/latest/apidoc/module-ol_layer_Vector-VectorLayer.html>
 #'
 #' @return A pol map object
 #' @seealso [graticule::graticule()]
 ## @examples
 #' @export
-add_graticule <- function(map, lons = seq(-180, 150, by = 30), lats = seq(-90, -40, by = 10), nverts = 51, xlim = range(lons), ylim = range(lats), style = NULL, ...) {
+add_graticule <- function(map, lons = seq(-180, 150, by = 30), lats = seq(-90, -40, by = 10), nverts = 51, xlim = range(lons), ylim = range(lats), style = NULL, no_legend = TRUE, ...) {
     grat <- geojsonsf::sf_geojson(sf::st_as_sf(graticule::graticule(lons = lons, lats = lats, nverts = nverts, xlim = xlim, ylim = ylim)))
     if (!inherits(style, "pol_style")) {
         flat_style <- style
@@ -25,5 +26,6 @@ add_graticule <- function(map, lons = seq(-180, 150, by = 30), lats = seq(-90, -
     if (is.null(style) && is.null(flat_style)) {
         style <- pol_style(stroke = list(color = "#40404040", lineDash = c(0.5, 4)))
     }
-    invoke_method(map, "add_geojson", grat, style, flat_style, NULL, NULL, list(...))
+    props <- if (isTRUE(no_legend)) list(no_legend = TRUE) else list()
+    invoke_method(map, "add_geojson", grat, style, flat_style, NULL, NULL, props, list(...))
 }

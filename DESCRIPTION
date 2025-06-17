@@ -1,6 +1,6 @@
 Package: polr
 Title: Polar OpenLayers
-Version: 0.0.4
+Version: 0.0.5
 Authors@R:
     c(person("Ben", "Raymond", email = "ben.raymond@aad.gov.au", role = c("aut", "cre")),
       person("Stefan", "Kuethe", email = "crazycapivara@gmail.com", role = "ctb", comment = "Author of https://github.com/crazycapivara/openlayers/, of which polr is a reimplementation and extension (of a sort)"),
@@ -14,6 +14,7 @@ Roxygen: list(markdown = TRUE)
 RoxygenNote: 7.3.2
 Imports:
     geojsonsf,
+    graticule,
     htmltools,
     htmlwidgets,
     sf,
