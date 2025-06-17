@@ -7,7 +7,7 @@
 <!-- badges: end -->
 
 The goal of polr is to provide bindings to the
-[openlayers](https://openlayers.org/) javascript library, with a focus
+[OpenLayers](https://openlayers.org/) javascript library, with a focus
 on polar mapping applications.
 
 ## Installation
@@ -89,16 +89,33 @@ polr::pol(view_options = list(extent = 6e6 * c(-1, -1, 1, 1))) %>%
     add_layer_switcher()
 ```
 
+## Projections
+
+OpenLayers is quite forgiving when it comes to projections: layers will
+typically be reprojected automatically to the map projection. That means
+that you can add a layer in longitude-latitude coordinates to a
+polar-projected map, and the layer will be reprojected as required.
+However, be aware that you might still encounter issues:
+
+- interpolation artifacts around the anti-meridian (e.g. when adding WMS
+  tiles in long-lat coordinates)
+
+- some functions also expect inputs to be in longitude and latitude
+  (e.g. `add_points`)
+
+- or encourage you to specify the projection (because it can’t always
+  automatically be deduced, e.g. `add_geojson`).
+
 ## Development notes
 
-polr provides bindings to the [openlayers](https://openlayers.org/)
+polr provides bindings to the [OpenLayers](https://openlayers.org/)
 javascript library, and uses the excellent `packer` package to
 facilitate the interactions between R and javascript.
 
 Some notes:
 
 - the majority of the package functionality is achieved with short R
-  functions that expose the underlying `openlayers` functions. The R
+  functions that expose the underlying OpenLayers functions. The R
   functions are found in the `R/` directory that will be familiar to R
   package developers. The corresponding javascript is in
   `srcjs/widgets/pol.js`
