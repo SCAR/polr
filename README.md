@@ -17,7 +17,7 @@ remotes::install_github("SCAR/polr")
 
 ## or
 
-install.packages('polr', repos = c('https://scar.r-universe.dev', 'https://cloud.r-project.org'))
+install.packages("polr", repos = c("https://scar.r-universe.dev", "https://cloud.r-project.org"))
 ```
 
 ## Example usage
@@ -60,7 +60,7 @@ shinyApp(ui = ui, server = server)
 
 <img src = "man/figures/polr-screenshot.png" style = "width:50vw;" />
 
-### A stanadlone widget (e.g. for Rmarkdown)
+### A standalone widget (e.g. for Rmarkdown)
 
 ``` r
 library(htmltools)
