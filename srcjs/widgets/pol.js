@@ -144,7 +144,7 @@ HTMLWidgets.widget({
             overlay.setPosition(anchor);
         };
 
-        methods.add_fgb = function(url, style, flat_style, options) {
+        methods.add_fgb = function(url, style, flat_style, popup, options) {
             options = options || {};
             const source = new VectorSource();
             const loader = createLoader(source, url);
@@ -155,6 +155,12 @@ HTMLWidgets.widget({
                 layer.setStyle(flat_style);
             } else if (style) {
                 layer.setStyle(make_style(style));
+            }
+            if (popup) {
+                layer.set("popup_property", "popup");
+                source.on("featuresloadend", (event) => {
+                    set_feature_property(event.features, "popup", popup); // set this on the feature
+                });
             }
             this.addLayer(layer);
         }

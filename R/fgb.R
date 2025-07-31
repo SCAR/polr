@@ -5,13 +5,14 @@
 #' @param url string: URL to the flatgeobuf. Ignored if `file` is provided
 #' @param file string: path to the flatgeobuf file. Note that `file` will only work with Shiny, not in standalone htmlwidgets or rmarkdown files
 #' @param style : either a style object as returned by [pol_style()] or a list of flat style properties <https://openlayers.org/en/latest/apidoc/module-ol_style_flat.html>
+#' @param popup character: popups to show, one per point
 #' @param ... : named vector layer options <https://openlayers.org/en/latest/apidoc/module-ol_layer_Vector-VectorLayer.html>
 #'
 #' @return A pol map object
 #'
 ## @examples
 #' @export
-add_fgb <- function(map, url, file, style = NULL, ...) {
+add_fgb <- function(map, url, file, style = NULL, popup = NULL, ...) {
     if (!missing(file)) {
         ## are we in a Shiny session?
         if (!shiny::isRunning()) stop("add_fgb with `file` only works in Shiny applications")
@@ -26,5 +27,5 @@ add_fgb <- function(map, url, file, style = NULL, ...) {
     } else {
         flat_style <- NULL
     }
-    invoke_method(map, "add_fgb", url, style, flat_style, list(...))
+    invoke_method(map, "add_fgb", url, style, flat_style, popup, list(...))
 }
