@@ -346,11 +346,14 @@ HTMLWidgets.widget({
         };
 
 
-        methods.add_layer_switcher = function() {
-            var ctrl = new LayerSwitcher({
-                // collapsed: false,
-                // mouseover: true
-            });
+        methods.add_layer_switcher = function(target_id) {
+            var opts = {};
+            if (target_id) {
+                opts.target = $('#' + target_id).get(0);
+            }
+            // opts.collapsed: false,
+            // opts.mouseover: true
+            var ctrl = new LayerSwitcher(opts);
             ctrl.on("drawlist", function(e) {
                 // hide cluster hull layers, see https://github.com/Viglino/ol-ext/blob/master/examples/control/map.switcher.filter.html
                 if (e.layer.get("no_legend")) {

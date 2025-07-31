@@ -4,10 +4,12 @@
 \alias{add_layer_switcher}
 \title{Add layer switcher}
 \usage{
-add_layer_switcher(map)
+add_layer_switcher(map, target_id)
 }
 \arguments{
 \item{map}{pol or pol_proxy: map to add the layer switcher to}
+
+\item{target_id}{string: ID of the html element to add the switcher to. If missing, the switcher will be placed inside the map pane}
 }
 \value{
 A pol map object
