@@ -36,4 +36,4 @@ pol_proxy_invoke <- function(p, method_name, ...) {
     p
 }
 
-.known_method_names <- c("add_cog", "add_fgb", "add_geojson", "add_layer_switcher", "add_points", "add_clustered_points", "add_wms_tiles", "add_wmts_from_capabilities")
+.known_method_names <- c("add_cog", "add_fgb", "add_geojson", "add_layer_switcher", "add_points", "add_clustered_points", "add_wms_tiles", "add_wmts_from_capabilities", "remove_layer")

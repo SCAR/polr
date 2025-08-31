@@ -66,6 +66,7 @@ HTMLWidgets.widget({
             options = options || {};
             options.sources = sources;
             // sourceOptions, convertToRGB, normalize, projection, transition, wrapX, interpolate
+            options.crossOrigin = options.crossOrigin || "anonymous";
             return options;
         };
 
@@ -143,6 +144,14 @@ HTMLWidgets.widget({
             overlay.setOffset(offset);
             overlay.setPosition(anchor);
         };
+
+        methods.remove_layer = function(layer_name) {
+            this.getLayers().forEach(layer => {
+                if (layer.get("name") && layer.get("name") == layer_name) {
+                    this.removeLayer(layer)
+                }
+            });
+        }
 
         methods.add_fgb = function(url, style, flat_style, popup, options) {
             options = options || {};
@@ -327,6 +336,8 @@ HTMLWidgets.widget({
 
         methods.add_wmts_from_capabilities = function(url, wmts_options, options) {
             options = options || {};
+            wmts_options = wmts_options || {};
+            //if (wmts_options.wrapX === undefined) { wmts_options.wrapX = true; }
             const parser = new WMTSCapabilities();
             const map = this;
             fetch(url) // url to WMTSCapabilities.xml
