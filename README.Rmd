@@ -41,7 +41,8 @@ library(shiny)
 
 ui <- fluidPage(
   polOutput("map", height = "80vh", width = "100%"),
-  actionButton("cog", "Add COG")
+  actionButton("add_cog", "Add COG"),
+  actionButton("remove_cog", "Remove COG", disabled = TRUE)
 )
 
 server <- function(input, output, session) {
@@ -57,12 +58,20 @@ server <- function(input, output, session) {
 
   ## dynamically update the map
   prox <- pol_proxy("map")
-  observeEvent(input$cog, {
+  observeEvent(input$add_cog, {
       ## when the button is clicked, add a COG (cloud-optimised geotiff)
       prox %>% add_cog(
                    "https://data.source.coop/scar/distant/hindell_et_al-2020/Hi2023-aes_colony_weighted_cog.tif",
                    geotiff_source_options = list(interpolate = FALSE), opacity = 0.7,
-                   style = list(color = pol_colormap(hcl.colors(21, "Spectral", rev = TRUE))))
+                   style = list(color = pol_colormap(hcl.colors(21, "Spectral", rev = TRUE))),
+                   name = "COG layer")
+      updateActionButton(session, inputId = "add_cog", disabled = TRUE) ## can't add twice
+      updateActionButton(session, inputId = "remove_cog", disabled = FALSE) ## but we can now remove it
+  })
+  observeEvent(input$remove_cog, {
+      prox %>% remove_layer("COG layer")
+      updateActionButton(session, inputId = "add_cog", disabled = FALSE)
+      updateActionButton(session, inputId = "remove_cog", disabled = TRUE)
   })
 }
 
