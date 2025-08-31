@@ -20,4 +20,6 @@ Imports:
     sf,
     shiny,
     uuid
-
+Suggests:
+    stringr,
+    testthat
