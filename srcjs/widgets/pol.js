@@ -370,6 +370,11 @@ HTMLWidgets.widget({
             }
             // opts.collapsed: false,
             // opts.mouseover: true
+            opts.onchangeCheck = function(ly, vis) {
+                if (HTMLWidgets.shinyMode) {
+                    Shiny.setInputValue("onchangeCheck", { name: ly.get("name"), visible: ly.getVisible() }, { priority: "event" });
+                }
+            };
             var ctrl = new LayerSwitcher(opts);
             ctrl.on("drawlist", function(e) {
                 // hide cluster hull layers, see https://github.com/Viglino/ol-ext/blob/master/examples/control/map.switcher.filter.html
